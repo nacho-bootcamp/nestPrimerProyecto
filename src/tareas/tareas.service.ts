@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { tareas, EstadoTareas } from './tareas.entity';
+import { updaterTarea } from "./dto/tareas.dto"
 import { v4 } from "uuid"
 
 @Injectable()
@@ -29,8 +30,19 @@ export class TareasService {
     this.tareas.push(tareas)
     return tareas
   }
-  updateTareas() { }
-  deleteTareas() { }
+  deleteTareas(id: string) {
+    this.tareas = this.tareas.filter(tarea => tarea.id !== id)
+  }
+
+  getTarreaById(id: string): tareas {
+    return this.tareas.find(tarea => tarea.id === id)
+  }
+  updateTareas(id: string, updateTarea: updaterTarea): tareas {
+    const tarea = this.getTarreaById(id);
+    const nuevaTarea = Object.assign(tarea, updateTarea)
+    this.tareas = this.tareas.map((tarea) => (tarea.id === id ? nuevaTarea : tarea))
+    return nuevaTarea
+  }
 }
 
 //para poder utilizar estos metodos en otro lado debo injectar esta clase 
